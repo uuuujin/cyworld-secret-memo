@@ -10,6 +10,7 @@ export interface UserProfile {
   totalCount?: number;
   passcode?: string;
   isLockEnabled?: boolean;
+  minime?: string;
   createdAt?: string;
   updatedAt?: string;
 }

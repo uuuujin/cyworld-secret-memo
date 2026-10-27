@@ -10,10 +10,14 @@ interface Props {
 }
 
 const MINIME_LIST = [
-  { id: 'cat', name: '도트 고양이', emoji: '🐱', desc: '도트 낭만 냥이' },
-  { id: 'boy', name: '도토리 소년', emoji: '🧢', desc: '싸이월드 감성 소년' },
-  { id: 'girl', name: '리본 소녀', emoji: '🎀', desc: '추억의 도트 소녀' },
-  { id: 'bear', name: '도트 곰돌이', emoji: '🧸', desc: '포근한 미니미' },
+  { id: 'swim', name: '수영', emoji: '🏊‍♀️', desc: '어푸어푸 수영 미니미' },
+  { id: 'meat', name: '고기', emoji: '🥩', desc: '고기파워 미니미' },
+  { id: 'cloud', name: '구름햇살', emoji: '⛅', desc: '뭉게구름 미니미' },
+  { id: 'heart', name: '화살하트', emoji: '💘', desc: '심쿵 큐피트 미니미' },
+  { id: 'fog', name: '안개얼굴', emoji: '😶‍🌫️', desc: '안개 속 멍때리기' },
+  { id: 'yawn', name: '하품', emoji: '🥱', desc: '졸린 미니미' },
+  { id: 'sweat', name: '식은땀', emoji: '😰', desc: '멘붕 식은땀 미니미' },
+  { id: 'anger', name: '버럭', emoji: '🤬', desc: '분노의 버럭 미니미' },
 ];
 
 const MOOD_OPTIONS = [
@@ -28,13 +32,16 @@ const MOOD_OPTIONS = [
 export default function LeftProfile({ profile, onUpdateProfile, onSelectTab }: Props) {
   const [isEditingStatus, setIsEditingStatus] = useState(false);
   const [statusText, setStatusText] = useState(profile.statusMessage || 'ㄴr는 ㄱr끔 눈물을 흘린ㄷr...☆');
-  const [selectedMinime, setSelectedMinime] = useState('cat');
+  const [selectedMinime, setSelectedMinime] = useState(profile.minime || 'swim');
   const [isPlayingBgm, setIsPlayingBgm] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(retroAudio.getCurrentTrackTitle());
 
   useEffect(() => {
     setStatusText(profile.statusMessage || 'ㄴr는 ㄱr끔 눈물을 흘린ㄷr...☆');
-  }, [profile.statusMessage]);
+    if (profile.minime) {
+      setSelectedMinime(profile.minime);
+    }
+  }, [profile.statusMessage, profile.minime]);
 
   const handleSaveStatus = () => {
     retroAudio.playClick();
@@ -120,7 +127,7 @@ export default function LeftProfile({ profile, onUpdateProfile, onSelectTab }: P
 
           {/* Minime Character */}
           <div className="text-5xl animate-bounce duration-1000 z-10 filter drop-shadow">
-            {MINIME_LIST.find((m) => m.id === selectedMinime)?.emoji || '🐱'}
+            {MINIME_LIST.find((m) => m.id === selectedMinime)?.emoji || '🏊‍♀️'}
           </div>
           <div className="z-10 text-[10px] text-[#2b84cb] font-bold mt-1 bg-white/90 px-1.5 py-0.5 rounded border border-[#bae6fd]">
             {MINIME_LIST.find((m) => m.id === selectedMinime)?.name}
@@ -131,22 +138,29 @@ export default function LeftProfile({ profile, onUpdateProfile, onSelectTab }: P
         </div>
 
         {/* Change Minime */}
-        <div className="w-full flex items-center justify-between text-[10px] text-gray-500 mt-2 px-1">
-          <span>미니미 변경:</span>
-          <div className="flex gap-1">
+        <div className="w-full mt-2 px-1">
+          <div className="text-[10px] text-gray-500 mb-1.5 flex items-center justify-between">
+            <span>미니미 선택:</span>
+            <span className="text-[#2b84cb] font-bold text-[10px]">
+              {MINIME_LIST.find((m) => m.id === selectedMinime)?.desc}
+            </span>
+          </div>
+          <div className="grid grid-cols-4 gap-1">
             {MINIME_LIST.map((m) => (
               <button
                 key={m.id}
+                type="button"
                 onClick={() => {
                   retroAudio.playClick();
                   setSelectedMinime(m.id);
+                  onUpdateProfile({ minime: m.id });
                 }}
-                className={`px-1 rounded border text-xs ${
+                className={`py-1.5 rounded border text-base flex items-center justify-center transition-all cursor-pointer ${
                   selectedMinime === m.id
-                    ? 'bg-[#2b84cb] text-white border-[#10558a]'
-                    : 'bg-gray-100 hover:bg-gray-200 border-gray-300'
+                    ? 'bg-[#2b84cb] text-white border-[#10558a] scale-105 shadow-xs'
+                    : 'bg-[#f8fafc] hover:bg-white border-gray-300 hover:border-[#2b84cb]'
                 }`}
-                title={m.desc}
+                title={`${m.name} - ${m.desc}`}
               >
                 {m.emoji}
               </button>
@@ -283,7 +297,7 @@ export default function LeftProfile({ profile, onUpdateProfile, onSelectTab }: P
           <option value="">이동할 페이지 선택 ▼</option>
           <option value="diary">📖 내 다이어리 & 메모</option>
           <option value="secret">🔒 비밀 금고 (Passcode)</option>
-          <option value="doodle">✏️ 한줄 낙서장</option>
+          <option value="doodle">💬 아무낙서 (PC 카톡 실시간 메모)</option>
           <option value="calendar">📅 달력으로 보기</option>
           <option value="settings">⚙️ 미니홈피 설정</option>
         </select>

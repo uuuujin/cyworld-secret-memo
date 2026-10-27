@@ -243,7 +243,7 @@ export default function MemoEditorModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="메모 제목을 적어주세요... (예: 오늘 있었던 특별한 일)"
-              maxLength={100}
+              maxLength={500}
               className="w-full font-bold text-sm text-[#333] focus:outline-none px-1"
             />
           </div>
@@ -253,16 +253,20 @@ export default function MemoEditorModal({
 
           {/* 5. Content Area with styled paper texture */}
           <div
-            className={`border-2 border-[#b8c6d4] rounded p-3 min-h-[180px] shadow-inner transition-colors ${activePaper.class}`}
+            className={`border-2 border-[#b8c6d4] rounded p-3 min-h-[220px] shadow-inner transition-colors flex flex-col ${activePaper.class}`}
           >
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="나만의 솔직한 이야기와 메모를 적어보세요... 아무도 보지 못하는 안전한 공간입니다."
-              rows={8}
+              placeholder="아주 긴 글, 소설, 공부 노트도 넉넉하게 저장됩니다."
+              rows={11}
               required
-              className="w-full bg-transparent resize-y focus:outline-none text-xs leading-relaxed text-[#222]"
+              className="w-full bg-transparent resize-y focus:outline-none text-xs leading-relaxed text-[#222] flex-1"
             />
+            <div className="text-[10px] text-gray-500 pt-1 text-right border-t border-gray-200/50 flex items-center justify-between">
+              <span className="text-[#2b84cb]">★ 대용량 저장 지원 (최대 50만 자)</span>
+              <span>현재 글자 수: <strong className="text-gray-800">{content.length.toLocaleString()}</strong>자</span>
+            </div>
           </div>
 
           {/* 6. Tags */}

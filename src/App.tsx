@@ -20,7 +20,7 @@ import HeaderBar from './components/HeaderBar';
 import LeftProfile from './components/LeftProfile';
 import TabsNavigation from './components/TabsNavigation';
 import MemoList from './components/MemoList';
-import QuickDoodleBoard from './components/QuickDoodleBoard';
+import InstantChatMemo from './components/InstantChatMemo';
 import CalendarView from './components/CalendarView';
 import SettingsView from './components/SettingsView';
 import MemoEditorModal from './components/MemoEditorModal';
@@ -72,6 +72,7 @@ export default function App() {
               totalCount: 1420,
               passcode: '1234',
               isLockEnabled: true,
+              minime: '....',
               createdAt: new Date().toISOString(),
               updatedAt: new Date().toISOString(),
             };
@@ -213,6 +214,7 @@ export default function App() {
     totalCount: 1420,
     passcode: '1234',
     isLockEnabled: true,
+    minime: '....',
   };
 
   const secretMemos = memos.filter((m) => m.isSecret || m.folder === 'secret');
@@ -259,7 +261,7 @@ export default function App() {
                   <span className="text-[#2b84cb] font-bold text-sm tracking-wide">
                     {activeTab === 'diary' && '📖 다이어리 & 전체 메모'}
                     {activeTab === 'secret' && '🔒 나만의 비밀 금고 (Secret Memos)'}
-                    {activeTab === 'doodle' && '✏️ 한줄 낙서장 (Doodle Board)'}
+                    {activeTab === 'doodle' && '💬 아무낙서 (PC 카톡 실시간 메모)'}
                     {activeTab === 'calendar' && '📅 다이어리 달력보기 (Calendar)'}
                     {activeTab === 'settings' && '⚙️ 미니홈피 관리 및 보안 설정'}
                   </span>
@@ -329,7 +331,7 @@ export default function App() {
                 )}
 
                 {activeTab === 'doodle' && (
-                  <QuickDoodleBoard
+                  <InstantChatMemo
                     notes={quickNotes}
                     onCreateNote={handleCreateQuickNote}
                     onDeleteNote={handleDeleteQuickNote}

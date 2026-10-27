@@ -44,6 +44,12 @@ export default function MemoList({
 }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [expandedIds, setExpandedIds] = useState<{ [id: string]: boolean }>({});
+
+  const toggleExpand = (memoId: string) => {
+    retroAudio.playClick();
+    setExpandedIds((prev) => ({ ...prev, [memoId]: !prev[memoId] }));
+  };
 
   // Filter memos
   const filteredMemos = memos
@@ -225,9 +231,35 @@ export default function MemoList({
                 </h3>
 
                 {/* Content */}
-                <div className="text-gray-800 text-xs whitespace-pre-wrap leading-relaxed mb-3 break-words">
-                  {memo.content}
-                </div>
+                {(() => {
+                  const isLong = memo.content.length > 500;
+                  const isExpanded = !!expandedIds[memo.id];
+                  const displayContent =
+                    isLong && !isExpanded
+                      ? memo.content.slice(0, 480) + '...'
+                      : memo.content;
+
+                  return (
+                    <div className="mb-3">
+                      <div className="text-gray-800 text-xs whitespace-pre-wrap leading-relaxed break-words">
+                        {displayContent}
+                      </div>
+                      {isLong && (
+                        <button
+                          type="button"
+                          onClick={() => toggleExpand(memo.id)}
+                          className="mt-1.5 text-[11px] font-bold text-[#2b84cb] hover:underline flex items-center gap-1"
+                        >
+                          {isExpanded ? (
+                            <span>▲ 내용 접기</span>
+                          ) : (
+                            <span>▼ 전체 내용 펼쳐보기 (총 {memo.content.length.toLocaleString()}자)</span>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Tags */}
                 {memo.tags && memo.tags.length > 0 && (

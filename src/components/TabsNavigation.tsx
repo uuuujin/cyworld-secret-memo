@@ -1,6 +1,6 @@
 import { ActiveTab } from '../types';
 import { retroAudio } from '../utils/retroAudio';
-import { BookOpen, Lock, Edit3, Calendar, Settings } from 'lucide-react';
+import { BookOpen, Lock, MessageSquare, Calendar, Settings } from 'lucide-react';
 
 interface Props {
   activeTab: ActiveTab;
@@ -12,7 +12,7 @@ export default function TabsNavigation({ activeTab, onTabChange, secretCount }: 
   const tabs: { id: ActiveTab; label: string; icon: any; count?: number }[] = [
     { id: 'diary', label: '다이어리', icon: BookOpen },
     { id: 'secret', label: '비밀금고', icon: Lock, count: secretCount },
-    { id: 'doodle', label: '한줄낙서', icon: Edit3 },
+    { id: 'doodle', label: '아무낙서', icon: MessageSquare },
     { id: 'calendar', label: '달력보기', icon: Calendar },
     { id: 'settings', label: '홈피설정', icon: Settings },
   ];

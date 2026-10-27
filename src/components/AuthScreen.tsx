@@ -56,7 +56,7 @@ export default function AuthScreen({ onLoginSuccess }: Props) {
           {/* Nostalgic Minihompy Lock Graphic */}
           <div className="relative mb-3">
             <div className="w-20 h-20 bg-white border-2 border-[#2b84cb] rounded-2xl flex items-center justify-center shadow-md">
-              <span className="text-4xl">🐱</span>
+              <span className="text-4xl animate-bounce">🥨️</span>
             </div>
             <div className="absolute -bottom-1 -right-1 bg-[#2b84cb] text-white p-1 rounded-full border-2 border-white shadow">
               <Lock className="w-3.5 h-3.5" />
