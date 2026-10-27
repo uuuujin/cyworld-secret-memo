@@ -1,0 +1,52 @@
+import { ActiveTab } from '../types';
+import { retroAudio } from '../utils/retroAudio';
+import { BookOpen, Lock, Edit3, Calendar, Settings } from 'lucide-react';
+
+interface Props {
+  activeTab: ActiveTab;
+  onTabChange: (tab: ActiveTab) => void;
+  secretCount: number;
+}
+
+export default function TabsNavigation({ activeTab, onTabChange, secretCount }: Props) {
+  const tabs: { id: ActiveTab; label: string; icon: any; count?: number }[] = [
+    { id: 'diary', label: '다이어리', icon: BookOpen },
+    { id: 'secret', label: '비밀금고', icon: Lock, count: secretCount },
+    { id: 'doodle', label: '한줄낙서', icon: Edit3 },
+    { id: 'calendar', label: '달력보기', icon: Calendar },
+    { id: 'settings', label: '홈피설정', icon: Settings },
+  ];
+
+  const handleSelect = (tabId: ActiveTab) => {
+    retroAudio.playClick();
+    onTabChange(tabId);
+  };
+
+  return (
+    <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-x-visible py-1 px-1 lg:py-4 -mr-1 z-10 shrink-0">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        const Icon = tab.icon;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => handleSelect(tab.id)}
+            className={`cyworld-tab px-3 py-2 text-xs flex items-center gap-1.5 whitespace-nowrap cursor-pointer transition-all ${
+              isActive ? 'active translate-x-1 lg:translate-x-2' : 'hover:bg-[#3a94db]'
+            }`}
+          >
+            <Icon className="w-3.5 h-3.5" />
+            <span>{tab.label}</span>
+            {tab.count !== undefined && tab.count > 0 && (
+              <span className={`text-[10px] px-1 py-0.2 rounded-full font-bold ${
+                isActive ? 'bg-[#ff5252] text-white' : 'bg-white text-[#2b84cb]'
+              }`}>
+                {tab.count}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}

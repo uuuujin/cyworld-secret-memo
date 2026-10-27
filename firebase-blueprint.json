@@ -1,0 +1,183 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User minihompy profile and diary settings",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Owner display name"
+        },
+        "hompyTitle": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Minihompy top title"
+        },
+        "statusMessage": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Owner status mood message"
+        },
+        "todayMood": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Today mood emotion label"
+        },
+        "bgmTitle": {
+          "type": "string",
+          "maxLength": 80,
+          "description": "Playing vintage BGM title"
+        },
+        "todayCount": {
+          "type": "number",
+          "description": "Today visit counter"
+        },
+        "totalCount": {
+          "type": "number",
+          "description": "Total lifetime visit counter"
+        },
+        "passcode": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "Optional diary lock pin"
+        },
+        "isLockEnabled": {
+          "type": "boolean",
+          "description": "Whether passcode lock is active"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["userId", "email", "displayName"]
+    },
+    "Memo": {
+      "title": "Memo",
+      "description": "Private memo or diary entry strictly owned by user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Memo document ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Owner UID"
+        },
+        "folder": {
+          "type": "string",
+          "enum": ["all", "diary", "secret", "doodle", "idea", "todo"],
+          "description": "Folder category"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Title of the memo"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 10000,
+          "description": "Body text of the memo"
+        },
+        "mood": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Mood icon/label"
+        },
+        "weather": {
+          "type": "string",
+          "maxLength": 20,
+          "description": "Weather icon/label"
+        },
+        "isSecret": {
+          "type": "boolean",
+          "description": "Whether this memo requires extra privacy"
+        },
+        "isPinned": {
+          "type": "boolean",
+          "description": "Pinned to top"
+        },
+        "bgPattern": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Note paper style: grid, lined, retro, plain"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags list"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last modified time"
+        }
+      },
+      "required": ["id", "userId", "title", "content", "folder"]
+    },
+    "QuickNote": {
+      "title": "QuickNote",
+      "description": "A short nostalgic one-line thought note",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "QuickNote ID"
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Owner UID"
+        },
+        "content": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Short note text"
+        },
+        "mood": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Mood emoji or text"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation time"
+        }
+      },
+      "required": ["id", "userId", "content"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document storing minihompy config"
+    },
+    "/users/{userId}/memos/{memoId}": {
+      "schema": "Memo",
+      "description": "Individual private memos and diary notes"
+    },
+    "/users/{userId}/quickNotes/{noteId}": {
+      "schema": "QuickNote",
+      "description": "Short one-liner thoughts and nostalgic status notes"
+    }
+  }
+}

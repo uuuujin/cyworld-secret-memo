@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --pixel-font: 'NeoDunggeunmo', 'Galmuri9', 'Silkscreen', monospace;
+  }
+
+  body {
+    font-family: var(--pixel-font);
+    background-color: #89939e;
+    /* Authentic Cyworld Gray Checkered Wallpaper Pattern */
+    background-image: 
+      linear-gradient(45deg, #7e8893 25%, transparent 25%), 
+      linear-gradient(-45deg, #7e8893 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, #7e8893 75%), 
+      linear-gradient(-45deg, transparent 75%, #7e8893 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+    color: #333333;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Retro Pixel Font Utility */
+.font-pixel {
+  font-family: 'NeoDunggeunmo', 'Galmuri9', 'Silkscreen', monospace;
+  letter-spacing: -0.02em;
+}
+
+/* Classic Cyworld Sky Blue Bevel Button */
+.cyworld-btn {
+  font-family: 'NeoDunggeunmo', 'Galmuri9', monospace;
+  background-color: #2b84cb;
+  color: #ffffff;
+  border-top: 2px solid #7bc6ff;
+  border-left: 2px solid #7bc6ff;
+  border-right: 2px solid #10558a;
+  border-bottom: 2px solid #10558a;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.25);
+  transition: all 0.05s ease;
+  user-select: none;
+}
+
+.cyworld-btn:hover {
+  background-color: #3a94db;
+}
+
+.cyworld-btn:active {
+  background-color: #1f72b2;
+  border-top: 2px solid #10558a;
+  border-left: 2px solid #10558a;
+  border-right: 2px solid #7bc6ff;
+  border-bottom: 2px solid #7bc6ff;
+  transform: translate(1px, 1px);
+}
+
+/* Cyworld Light Sky Blue Button */
+.cyworld-btn-light {
+  font-family: 'NeoDunggeunmo', 'Galmuri9', monospace;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #7dd3fc;
+  border-bottom: 2px solid #7dd3fc;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.15);
+}
+
+.cyworld-btn-light:hover {
+  background-color: #bae6fd;
+}
+
+.cyworld-btn-light:active {
+  background-color: #7dd3fc;
+  border-top: 2px solid #7dd3fc;
+  border-left: 2px solid #7dd3fc;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: translate(1px, 1px);
+}
+
+/* Classic Vertical Tab (Right Edge of Hompy) */
+.cyworld-tab {
+  font-family: 'NeoDunggeunmo', 'Galmuri9', monospace;
+  background-color: #2b84cb;
+  color: #ffffff;
+  border-top: 2px solid #7bc6ff;
+  border-right: 2px solid #10558a;
+  border-bottom: 2px solid #10558a;
+  border-left: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.1s ease;
+}
+
+.cyworld-tab.active {
+  background-color: #ffffff;
+  color: #10558a;
+  border-top: 2px solid #2b84cb;
+  border-right: 2px solid #2b84cb;
+  border-bottom: 2px solid #2b84cb;
+  border-left: 2px solid #ffffff;
+  font-weight: bold;
+}
+
+/* Retro Inset Box (Form inputs, inner frames) */
+.retro-inset {
+  border-top: 2px solid #8e949b;
+  border-left: 2px solid #8e949b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  background-color: #ffffff;
+}
+
+/* Retro Outset Window Box */
+.retro-outset {
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #8e949b;
+  border-bottom: 2px solid #8e949b;
+}
+
+/* Paper lined texture */
+.paper-lined {
+  background-color: #ffffff;
+  background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 100% 24px;
+  line-height: 24px;
+}
+
+/* Paper grid texture */
+.paper-grid {
+  background-color: #fcfcfc;
+  background-image: 
+    linear-gradient(#f1f5f9 1px, transparent 1px),
+    linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Vintage Scrollbar */
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+::-webkit-scrollbar-track {
+  background: #d4d8de;
+  border-left: 1px solid #ffffff;
+}
+::-webkit-scrollbar-thumb {
+  background: #b0b8c2;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #6b7280;
+  border-bottom: 2px solid #6b7280;
+}

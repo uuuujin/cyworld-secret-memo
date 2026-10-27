@@ -1,0 +1,6 @@
+{
+  "name": "싸이월드 미니홈피 비밀 메모장",
+  "description": "2000년대 감성의 레트로 도트 디자인과 파이어베이스 기반의 나만의 비밀 메모장",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
