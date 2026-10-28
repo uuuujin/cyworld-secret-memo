@@ -5,9 +5,10 @@ import { Lock, Sparkles, Shield, AlertCircle } from 'lucide-react';
 
 interface Props {
   onLoginSuccess?: () => void;
+  noticeMessage?: string | null;
 }
 
-export default function AuthScreen({ onLoginSuccess }: Props) {
+export default function AuthScreen({ onLoginSuccess, noticeMessage }: Props) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -56,7 +57,7 @@ export default function AuthScreen({ onLoginSuccess }: Props) {
           {/* Nostalgic Minihompy Lock Graphic */}
           <div className="relative mb-3">
             <div className="w-20 h-20 bg-white border-2 border-[#2b84cb] rounded-2xl flex items-center justify-center shadow-md">
-              <span className="text-4xl animate-bounce">🥨️</span>
+              <span className="text-4xl animate-bounce">🏊‍♀️</span>
             </div>
             <div className="absolute -bottom-1 -right-1 bg-[#2b84cb] text-white p-1 rounded-full border-2 border-white shadow">
               <Lock className="w-3.5 h-3.5" />
@@ -90,6 +91,16 @@ export default function AuthScreen({ onLoginSuccess }: Props) {
               <span>4자리 비밀번호 잠금 지원</span>
             </div>
           </div>
+
+          {noticeMessage && (
+            <div className="w-full p-2.5 bg-amber-50 border border-amber-300 rounded text-amber-800 text-xs mb-3 flex items-start gap-2 text-left">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-[11px]">로그인 세션 만료 안내</p>
+                <p className="text-[10px] text-amber-700 leading-tight mt-0.5">{noticeMessage}</p>
+              </div>
+            </div>
+          )}
 
           {errorMsg && (
             <div className="w-full p-2 bg-red-50 border border-red-200 rounded text-red-600 text-xs mb-3 flex items-center gap-1.5 text-left">

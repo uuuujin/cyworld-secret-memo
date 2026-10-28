@@ -49,9 +49,9 @@ export default function SecretLockModal({ correctPin, onSuccess, onClose }: Prop
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 font-pixel">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 font-pixel overflow-y-auto">
       <div
-        className={`bg-[#f0f4f8] border-3 border-[#2b84cb] rounded-lg shadow-2xl w-full max-w-xs overflow-hidden ${
+        className={`bg-[#f0f4f8] border-3 border-[#2b84cb] rounded-lg shadow-2xl w-full max-w-xs my-auto overflow-hidden ${
           isShaking ? 'animate-bounce' : ''
         }`}
       >

@@ -73,7 +73,7 @@ export default function LeftProfile({ profile, onUpdateProfile, onSelectTab }: P
   };
 
   return (
-    <aside className="w-full lg:w-72 bg-[#edf2f7] p-3 border-2 border-[#b8c6d4] rounded-lg flex flex-col gap-3 font-pixel">
+    <aside className="w-full lg:w-72 bg-[#edf2f7] p-2.5 sm:p-3 border-2 border-[#b8c6d4] rounded-lg flex flex-col gap-2.5 font-pixel h-full max-h-full overflow-y-auto">
       {/* 1. Today & Total Visitors (The Cyworld classic) */}
       <div className="flex items-center justify-between text-xs px-2 py-1 bg-white border border-[#cfd9e3] rounded shadow-xs">
         <div className="flex items-center gap-1.5 font-bold">

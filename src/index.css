@@ -5,6 +5,17 @@
     --pixel-font: 'NeoDunggeunmo', 'Galmuri9', 'Silkscreen', monospace;
   }
 
+  html,
+  body,
+  #root {
+    height: 100%;
+    height: 100dvh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
   body {
     font-family: var(--pixel-font);
     background-color: #89939e;
@@ -102,6 +113,31 @@
   border-right: 2px solid #2b84cb;
   border-bottom: 2px solid #2b84cb;
   border-left: 2px solid #ffffff;
+  font-weight: bold;
+}
+
+/* Mobile Horizontal Tab (Top/Bottom Edge) */
+.cyworld-tab-mobile {
+  font-family: 'NeoDunggeunmo', 'Galmuri9', monospace;
+  background-color: #2b84cb;
+  color: #ffffff;
+  border-top: 2px solid #7bc6ff;
+  border-left: 2px solid #7bc6ff;
+  border-right: 2px solid #10558a;
+  border-bottom: 2px solid #2b84cb;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+  transition: all 0.1s ease;
+}
+
+.cyworld-tab-mobile.active {
+  background-color: #ffffff;
+  color: #10558a;
+  border-top: 2px solid #2b84cb;
+  border-left: 2px solid #2b84cb;
+  border-right: 2px solid #2b84cb;
+  border-bottom: 2px solid #ffffff;
   font-weight: bold;
 }
 

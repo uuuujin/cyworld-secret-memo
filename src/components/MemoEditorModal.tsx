@@ -103,8 +103,8 @@ export default function MemoEditorModal({
   const activePaper = PAPERS.find((p) => p.id === bgPattern) || PAPERS[0];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 font-pixel">
-      <div className="bg-[#f0f4f8] border-3 border-[#2b84cb] rounded-lg shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 font-pixel overflow-y-auto">
+      <div className="bg-[#f0f4f8] border-3 border-[#2b84cb] rounded-lg shadow-2xl w-full max-w-2xl max-h-[94vh] my-auto flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Window Header */}
         <div className="bg-[#2b84cb] text-white px-3 py-2 flex items-center justify-between font-bold text-xs">
           <div className="flex items-center gap-1.5">
@@ -243,7 +243,7 @@ export default function MemoEditorModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="메모 제목을 적어주세요... (예: 오늘 있었던 특별한 일)"
-              maxLength={500}
+              maxLength={200}
               className="w-full font-bold text-sm text-[#333] focus:outline-none px-1"
             />
           </div>
@@ -258,7 +258,7 @@ export default function MemoEditorModal({
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="아주 긴 글, 소설, 공부 노트도 넉넉하게 저장됩니다."
+              placeholder="나만의 솔직한 이야기와 메모를 적어보세요... 아주 긴 글, 소설, 공부 노트도 넉넉하게 저장됩니다."
               rows={11}
               required
               className="w-full bg-transparent resize-y focus:outline-none text-xs leading-relaxed text-[#222] flex-1"

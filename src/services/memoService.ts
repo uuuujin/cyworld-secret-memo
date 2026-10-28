@@ -8,6 +8,7 @@ import {
   query,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { MemoItem, QuickNote, UserProfile } from '../types';
@@ -87,19 +88,24 @@ export function subscribeMemos(
   const path = `users/${userId}/memos`;
   try {
     const memosRef = collection(db, 'users', userId, 'memos');
-    const q = query(memosRef, orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(
-      q,
+      memosRef,
       (snapshot) => {
         const memos: MemoItem[] = [];
         snapshot.forEach((docSnap) => {
           memos.push(docSnap.data() as MemoItem);
         });
+        memos.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         onUpdate(memos);
       },
       (error) => {
-        handleFirestoreError(error, OperationType.LIST, path);
+        console.error('subscribeMemos error:', error);
+        if (onError) {
+          onError(error);
+        } else {
+          handleFirestoreError(error, OperationType.LIST, path);
+        }
       }
     );
 
@@ -195,27 +201,47 @@ export async function deleteMemo(userId: string, memoId: string): Promise<void> 
 
 /**
  * Subscribe to Quick Notes / 한줄 낙서
+ * By default, fetches only the past 7 days (1 week) to optimize network bandwidth and rendering speed for large datasets.
  */
 export function subscribeQuickNotes(
   userId: string,
-  onUpdate: (notes: QuickNote[]) => void
+  onUpdate: (notes: QuickNote[]) => void,
+  options?: {
+    days?: number; // default: 7 days
+    fetchAll?: boolean;
+  },
+  onError?: (err: Error) => void
 ): () => void {
   const path = `users/${userId}/quickNotes`;
   try {
     const notesRef = collection(db, 'users', userId, 'quickNotes');
-    const q = query(notesRef, orderBy('createdAt', 'desc'));
+
+    let notesQuery;
+    if (options?.fetchAll) {
+      notesQuery = query(notesRef);
+    } else {
+      const days = options?.days ?? 7;
+      const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+      notesQuery = query(notesRef, where('createdAt', '>=', cutoffDate));
+    }
 
     return onSnapshot(
-      q,
+      notesQuery,
       (snapshot) => {
         const notes: QuickNote[] = [];
         snapshot.forEach((docSnap) => {
           notes.push(docSnap.data() as QuickNote);
         });
+        notes.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         onUpdate(notes);
       },
       (error) => {
-        handleFirestoreError(error, OperationType.LIST, path);
+        console.error('subscribeQuickNotes error:', error);
+        if (onError) {
+          onError(error);
+        } else {
+          handleFirestoreError(error, OperationType.LIST, path);
+        }
       }
     );
   } catch (error) {

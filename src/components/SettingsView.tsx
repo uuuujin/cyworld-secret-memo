@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { MemoItem, UserProfile } from '../types';
+import { MemoItem, QuickNote, UserProfile } from '../types';
 import { retroAudio } from '../utils/retroAudio';
-import { Settings, Shield, Lock, Download, Check, Save } from 'lucide-react';
+import { Settings, Shield, Lock, Download, Check, Save, ExternalLink } from 'lucide-react';
 
 interface Props {
   profile: UserProfile;
   memos: MemoItem[];
+  quickNotes?: QuickNote[];
   onUpdateProfile: (updates: Partial<UserProfile>) => Promise<void>;
 }
 
-export default function SettingsView({ profile, memos, onUpdateProfile }: Props) {
+export default function SettingsView({ profile, memos, quickNotes = [], onUpdateProfile }: Props) {
   const [hompyTitle, setHompyTitle] = useState(profile.hompyTitle || '★~나만의 비밀 미니홈피~★');
   const [displayName, setDisplayName] = useState(profile.displayName || '주인장');
   const [passcode, setPasscode] = useState(profile.passcode || '1234');
@@ -38,8 +39,14 @@ export default function SettingsView({ profile, memos, onUpdateProfile }: Props)
 
   const handleExportMemos = () => {
     retroAudio.playClick();
+    const backupData = {
+      profile,
+      memos,
+      quickNotes,
+      exportedAt: new Date().toISOString(),
+    };
     const dataStr =
-      'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(memos, null, 2));
+      'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(backupData, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute('href', dataStr);
     downloadAnchor.setAttribute(
@@ -147,10 +154,10 @@ export default function SettingsView({ profile, memos, onUpdateProfile }: Props)
           <div>
             <h4 className="font-bold text-gray-700 text-xs flex items-center gap-1 mb-0.5">
               <Download className="w-3.5 h-3.5 text-[#2b84cb]" />
-              <span>메모 데이터 백업 & 내보내기</span>
+              <span>전체 데이터 백업 & 내보내기</span>
             </h4>
             <p className="text-[11px] text-gray-500">
-              현재 작성된 {memos.length}개의 메모를 안전하게 파일(JSON)로 저장합니다.
+              현재 저장된 다이어리 메모 {memos.length}개, 아무낙서 {quickNotes.length}개를 안전하게 JSON 파일로 다운로드합니다.
             </p>
           </div>
           <button
@@ -159,7 +166,7 @@ export default function SettingsView({ profile, memos, onUpdateProfile }: Props)
             className="cyworld-btn-light px-3 py-1.5 rounded flex items-center gap-1 font-bold shrink-0"
           >
             <Download className="w-3 h-3" />
-            <span>백업 다운로드</span>
+            <span>전체 백업 다운로드</span>
           </button>
         </div>
 
@@ -186,9 +193,21 @@ export default function SettingsView({ profile, memos, onUpdateProfile }: Props)
             </div>
           </div>
 
-          <div className="bg-white p-2 rounded border border-[#e2e8f0] text-[10px] text-gray-600 leading-relaxed">
-            <span className="font-bold text-[#166534]">보안 규칙 상태: </span>
-            사용자 로그인 계정(<span className="font-bold text-[#2b84cb]">{profile.email}</span>)의 고유 UID로만 조회 및 작성이 허용되는 1인 비공개 규칙이 적용되어 있습니다.
+          <div className="bg-white p-2.5 rounded border border-[#e2e8f0] text-[10px] text-gray-600 leading-relaxed flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div>
+              <span className="font-bold text-[#166534]">보안 규칙 상태: </span>
+              사용자 로그인 계정(<span className="font-bold text-[#2b84cb]">{profile.email}</span>)의 고유 UID로만 조회 및 작성이 허용되는 1인 비공개 규칙이 적용되어 있습니다.
+            </div>
+            <a
+              href="https://console.firebase.google.com/project/emergent-poetry-mq6d2/firestore/databases/ai-studio-c1ec6c8a-6d5f-4828-9737-65c98ef874c9/data"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cyworld-btn-light px-2 py-1 rounded inline-flex items-center gap-1 text-[10px] font-bold shrink-0"
+              title="Firebase 콘솔에서 직접 데이터 확인"
+            >
+              <span>Firebase 콘솔에서 DB 보기</span>
+              <ExternalLink className="w-2.5 h-2.5" />
+            </a>
           </div>
         </div>
 
