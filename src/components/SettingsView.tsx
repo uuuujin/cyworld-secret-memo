@@ -8,9 +8,18 @@ interface Props {
   memos: MemoItem[];
   quickNotes?: QuickNote[];
   onUpdateProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  bgSkin?: string;
+  onBgSkinChange?: (skin: string) => void;
 }
 
-export default function SettingsView({ profile, memos, quickNotes = [], onUpdateProfile }: Props) {
+export default function SettingsView({
+  profile,
+  memos,
+  quickNotes = [],
+  onUpdateProfile,
+  bgSkin = 'grid',
+  onBgSkinChange,
+}: Props) {
   const [hompyTitle, setHompyTitle] = useState(profile.hompyTitle || '★~나만의 비밀 미니홈피~★');
   const [displayName, setDisplayName] = useState(profile.displayName || '주인장');
   const [passcode, setPasscode] = useState(profile.passcode || '1234');
@@ -104,6 +113,45 @@ export default function SettingsView({ profile, memos, quickNotes = [], onUpdate
             />
           </div>
         </div>
+
+        {/* Retro Wallpaper Theme Setting */}
+        {onBgSkinChange && (
+          <div className="bg-white p-3.5 rounded-lg border border-[#cfd9e3] space-y-2">
+            <h4 className="font-bold text-gray-700 text-xs flex items-center justify-between">
+              <span className="flex items-center gap-1">
+                <span className="text-[#2b84cb]">■</span>
+                <span>싸이월드 배경 격자무늬 스킨</span>
+              </span>
+              <span className="text-[10px] text-gray-400">2000s 레트로 감성</span>
+            </h4>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+              {[
+                { id: 'grid', label: '진짜 모눈 격자', desc: '아이코닉 회색 격자', previewClass: 'cyworld-bg-grid' },
+                { id: 'checker', label: '바둑판 체크', desc: '2000년대 체크보드', previewClass: 'cyworld-bg-checker' },
+                { id: 'dot', label: '도트 격자', desc: '픽셀 도트 매트릭스', previewClass: 'cyworld-bg-dot' },
+                { id: 'skyblue', label: '스카이블루 격자', desc: '청량한 하늘색 격자', previewClass: 'cyworld-bg-skyblue' },
+              ].map((skin) => (
+                <button
+                  key={skin.id}
+                  type="button"
+                  onClick={() => {
+                    retroAudio.playClick();
+                    onBgSkinChange(skin.id);
+                  }}
+                  className={`p-2 rounded-lg border text-left transition-all ${
+                    bgSkin === skin.id
+                      ? 'border-[#2b84cb] ring-2 ring-[#7dd3fc] bg-[#f0f9ff]'
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  }`}
+                >
+                  <div className={`h-8 w-full rounded border border-gray-300 mb-1.5 shadow-inner ${skin.previewClass}`} />
+                  <div className="font-bold text-[11px] text-gray-800">{skin.label}</div>
+                  <div className="text-[9px] text-gray-500 truncate">{skin.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Security / PIN Lock Settings */}
         <div className="bg-white p-3.5 rounded-lg border border-[#cfd9e3] space-y-3">

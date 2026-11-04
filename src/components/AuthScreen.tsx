@@ -6,11 +6,26 @@ import { Lock, Sparkles, Shield, AlertCircle } from 'lucide-react';
 interface Props {
   onLoginSuccess?: () => void;
   noticeMessage?: string | null;
+  bgSkin?: string;
 }
 
-export default function AuthScreen({ onLoginSuccess, noticeMessage }: Props) {
+export default function AuthScreen({ onLoginSuccess, noticeMessage, bgSkin = 'grid' }: Props) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const getSkinClass = (skin: string) => {
+    switch (skin) {
+      case 'checker':
+        return 'cyworld-bg-checker';
+      case 'dot':
+        return 'cyworld-bg-dot';
+      case 'skyblue':
+        return 'cyworld-bg-skyblue';
+      case 'grid':
+      default:
+        return 'cyworld-bg-grid';
+    }
+  };
 
   const handleLogin = async () => {
     retroAudio.playClick();
@@ -29,7 +44,7 @@ export default function AuthScreen({ onLoginSuccess, noticeMessage }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 font-pixel select-none">
+    <div className={`min-h-screen flex items-center justify-center p-4 font-pixel select-none ${getSkinClass(bgSkin)}`}>
       {/* Outer nostalgic pop-up window */}
       <div className="w-full max-w-md bg-[#edf2f7] border-3 border-[#2b84cb] rounded-xl shadow-2xl overflow-hidden">
         {/* Retro Window Title Bar */}

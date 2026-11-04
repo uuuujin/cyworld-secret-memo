@@ -10,6 +10,7 @@ interface Props {
 }
 
 const MINIME_LIST = [
+  { id: 'lol', name: 'ㅎ', emoji: '⭐', desc: 'ㅎㅎ' },
   { id: 'swim', name: '수영', emoji: '🏊‍♀️', desc: '어푸어푸 수영 미니미' },
   { id: 'meat', name: '고기', emoji: '🥩', desc: '고기파워 미니미' },
   { id: 'cloud', name: '구름햇살', emoji: '⛅', desc: '뭉게구름 미니미' },

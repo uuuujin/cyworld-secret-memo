@@ -10,6 +10,8 @@ interface Props {
   onChargeDotori: () => void;
   minimeEmoji?: string;
   onOpenMobileProfile?: () => void;
+  bgSkin?: string;
+  onChangeBgSkin?: () => void;
 }
 
 export default function HeaderBar({
@@ -20,6 +22,8 @@ export default function HeaderBar({
   onChargeDotori,
   minimeEmoji = '🏊‍♀️',
   onOpenMobileProfile,
+  bgSkin = 'grid',
+  onChangeBgSkin,
 }: Props) {
   const [copied, setCopied] = useState(false);
 
@@ -76,6 +80,30 @@ export default function HeaderBar({
           <span>{dotoriCount}</span>
           <Sparkles className="w-2.5 h-2.5 text-amber-500 hidden sm:inline" />
         </button>
+
+        {/* Wallpaper skin cycle button */}
+        {onChangeBgSkin && (
+          <button
+            onClick={() => {
+              retroAudio.playClick();
+              onChangeBgSkin();
+            }}
+            className="cyworld-btn-light px-1.5 sm:px-2 py-0.5 flex items-center gap-1 text-[10px] sm:text-[11px] rounded shrink-0"
+            title="클릭하여 싸이월드 배경 격자무늬 스킨 변경"
+          >
+            <span>🎨</span>
+            <span className="hidden sm:inline">스킨:</span>
+            <span className="font-bold">
+              {bgSkin === 'checker'
+                ? '바둑판'
+                : bgSkin === 'dot'
+                ? '도트'
+                : bgSkin === 'skyblue'
+                ? '하늘'
+                : '격자'}
+            </span>
+          </button>
+        )}
 
         {/* Copy hompy URL */}
         <button

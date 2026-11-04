@@ -46,6 +46,23 @@ export default function InstantChatMemo({
   const [expandedNoteIds, setExpandedNoteIds] = useState<{ [id: string]: boolean }>({});
   const [textareaRows, setTextareaRows] = useState(3);
 
+  // Bubble Font Size Setting for comfortable reading (sm: 11.5px, base: 12.5px, lg: 14.5px)
+  const [bubbleFontSize, setBubbleFontSize] = useState<'sm' | 'base' | 'lg'>(() => {
+    try {
+      const saved = localStorage.getItem('chat_bubble_font_size');
+      if (saved === 'sm' || saved === 'base' || saved === 'lg') return saved;
+    } catch {}
+    return 'base'; // 기본값: 기존(14px)보다 아담하고 편안한 12.5px
+  });
+
+  const changeBubbleFontSize = (size: 'sm' | 'base' | 'lg') => {
+    retroAudio.playClick();
+    setBubbleFontSize(size);
+    try {
+      localStorage.setItem('chat_bubble_font_size', size);
+    } catch {}
+  };
+
   // Bubble Width Setting (Saved to localStorage: normal: 78% right-aligned, wide: 90% wide card, full: 100% full-width)
   const [bubbleWidth, setBubbleWidth] = useState<BubbleWidth>(() => {
     try {
@@ -342,75 +359,91 @@ export default function InstantChatMemo({
           </div>
         </div>
 
-        {/* Header Right Tools: 1-Week Toggle, Search Button, Width Control, Fullscreen & Theme */}
-        <div className="flex items-center gap-1 shrink-0">
-          {/* Bubble Width Segmented Control (모든 노란 박스 너비 조절) */}
-          <div className="flex items-center bg-white/90 rounded border border-gray-300 p-0.5 text-[10px] sm:text-[11px] shadow-xs">
+        {/* Header Right Tools: Width Control, Font Size, Search Button, Fullscreen & Theme */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 flex-wrap justify-end">
+          {/* Bubble Width Segmented Control (너비 조절) */}
+          <div className="flex items-center bg-white/95 rounded border border-gray-300 p-0.5 text-[10px] sm:text-[11px] shadow-xs">
             <span className="text-[10px] text-gray-500 font-bold px-1 hidden md:inline">너비:</span>
             <button
               type="button"
               onClick={() => changeBubbleWidth('normal')}
-              className={`px-1.5 sm:px-2 py-0.5 rounded transition-all font-medium ${
+              className={`px-1.5 py-0.5 rounded transition-all font-medium ${
                 bubbleWidth === 'normal'
                   ? 'bg-[#2b84cb] text-white font-bold shadow-2xs'
                   : 'text-gray-600 hover:text-black hover:bg-gray-100'
               }`}
-              title="기본: 글자 길이에 맞춰 작아지는 카카오톡 말풍선 (최대 62% 우측 정렬)"
+              title="기본: 일반 말풍선 (최대 62% 우측 정렬)"
             >
               기본
             </button>
             <button
               type="button"
               onClick={() => changeBubbleWidth('wide')}
-              className={`px-1.5 sm:px-2 py-0.5 rounded transition-all font-medium ${
+              className={`px-1.5 py-0.5 rounded transition-all font-medium ${
                 bubbleWidth === 'wide'
                   ? 'bg-[#2b84cb] text-white font-bold shadow-2xs'
                   : 'text-gray-600 hover:text-black hover:bg-gray-100'
               }`}
-              title="넓게: 가로 폭의 75%를 차지하는 넉넉한 와이드 카드 (우측 정렬 및 여백 유지)"
+              title="넓게: 가로 폭 75% 와이드 카드"
             >
-              넓게<span className="hidden lg:inline text-[9px] opacity-80">(75%)</span>
+              넓게
             </button>
             <button
               type="button"
               onClick={() => changeBubbleWidth('full')}
-              className={`px-1.5 sm:px-2 py-0.5 rounded transition-all font-medium ${
+              className={`px-1.5 py-0.5 rounded transition-all font-medium ${
                 bubbleWidth === 'full'
                   ? 'bg-[#2b84cb] text-white font-bold shadow-2xs'
                   : 'text-gray-600 hover:text-black hover:bg-gray-100'
               }`}
-              title="꽉차게: 화면 좌우 끝까지 100% 꽉 채우는 전폭 메모장 모드"
+              title="꽉차게: 100% 전폭 메모장 모드"
             >
-              꽉차게<span className="hidden lg:inline text-[9px] opacity-80">(100%)</span>
+              꽉차게
             </button>
           </div>
 
-          {/* Window Fullscreen Toggle Button */}
-          <button
-            type="button"
-            onClick={() => {
-              retroAudio.playClick();
-              setIsWindowFullscreen((prev) => !prev);
-            }}
-            className={`px-1.5 sm:px-2 py-1 rounded border text-[10px] sm:text-[11px] font-bold flex items-center gap-1 transition-all ${
-              isWindowFullscreen
-                ? 'bg-[#10558a] text-white border-[#0c3e66] shadow-inner ring-1 ring-white/50'
-                : 'bg-white/85 hover:bg-white text-gray-700 border-gray-300 shadow-xs'
-            }`}
-            title={isWindowFullscreen ? '원래 창 크기로 축소 (ESC)' : '아무낙서 전체 화면으로 크게 보기'}
-          >
-            {isWindowFullscreen ? (
-              <>
-                <Minimize2 className="w-3 h-3 text-amber-300" />
-                <span className="hidden sm:inline">창 축소</span>
-              </>
-            ) : (
-              <>
-                <Maximize2 className="w-3 h-3 text-[#2b84cb]" />
-                <span className="hidden sm:inline">전체 화면</span>
-              </>
-            )}
-          </button>
+          {/* Bubble Font Size Control (글자 크기 조절: 소 11.5px / 중 13px / 대 14.5px) */}
+          <div className="flex items-center bg-white/95 rounded border border-gray-300 p-0.5 text-[10px] sm:text-[11px] shadow-xs ring-1 ring-[#2b84cb]/20">
+            <span className="text-[10px] text-[#2b84cb] font-bold px-1 flex items-center gap-0.5">
+              <span>글자:</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => changeBubbleFontSize('sm')}
+              className={`px-1.5 py-0.5 rounded transition-all font-medium ${
+                bubbleFontSize === 'sm'
+                  ? 'bg-[#2b84cb] text-white font-bold shadow-2xs'
+                  : 'text-gray-600 hover:text-black hover:bg-gray-100'
+              }`}
+              title="글씨 작게 (11.5px)"
+            >
+              소
+            </button>
+            <button
+              type="button"
+              onClick={() => changeBubbleFontSize('base')}
+              className={`px-1.5 py-0.5 rounded transition-all font-medium ${
+                bubbleFontSize === 'base'
+                  ? 'bg-[#2b84cb] text-white font-bold shadow-2xs'
+                  : 'text-gray-600 hover:text-black hover:bg-gray-100'
+              }`}
+              title="글씨 보통 (13px - 기본 권장)"
+            >
+              중
+            </button>
+            <button
+              type="button"
+              onClick={() => changeBubbleFontSize('lg')}
+              className={`px-1.5 py-0.5 rounded transition-all font-medium ${
+                bubbleFontSize === 'lg'
+                  ? 'bg-[#2b84cb] text-white font-bold shadow-2xs'
+                  : 'text-gray-600 hover:text-black hover:bg-gray-100'
+              }`}
+              title="글씨 크게 (14.5px)"
+            >
+              대
+            </button>
+          </div>
 
           {/* 1-Week / All Filter Toggle */}
           {onToggleOneWeekFilter && (
@@ -445,7 +478,7 @@ export default function InstantChatMemo({
               retroAudio.playClick();
               setIsSearchOpen((prev) => !prev);
             }}
-            className={`px-2 py-1 rounded border flex items-center gap-1 text-[11px] font-bold transition-all ${
+            className={`px-1.5 sm:px-2 py-1 rounded border flex items-center gap-1 text-[10px] sm:text-[11px] font-bold transition-all ${
               isSearchOpen
                 ? 'bg-[#2b84cb] text-white border-[#10558a] shadow-inner'
                 : 'bg-white/85 hover:bg-white text-gray-700 border-gray-300 shadow-xs'
@@ -454,6 +487,33 @@ export default function InstantChatMemo({
           >
             <Search className="w-3 h-3" />
             <span className="hidden sm:inline">검색</span>
+          </button>
+
+          {/* Window Fullscreen Toggle Button */}
+          <button
+            type="button"
+            onClick={() => {
+              retroAudio.playClick();
+              setIsWindowFullscreen((prev) => !prev);
+            }}
+            className={`px-1.5 sm:px-2 py-1 rounded border text-[10px] sm:text-[11px] font-bold flex items-center gap-1 transition-all ${
+              isWindowFullscreen
+                ? 'bg-[#10558a] text-white border-[#0c3e66] shadow-inner ring-1 ring-white/50'
+                : 'bg-white/85 hover:bg-white text-gray-700 border-gray-300 shadow-xs'
+            }`}
+            title={isWindowFullscreen ? '원래 창 크기로 축소 (ESC)' : '아무낙서 전체 화면으로 크게 보기'}
+          >
+            {isWindowFullscreen ? (
+              <>
+                <Minimize2 className="w-3 h-3 text-amber-300" />
+                <span className="hidden sm:inline">창 축소</span>
+              </>
+            ) : (
+              <>
+                <Maximize2 className="w-3 h-3 text-[#2b84cb]" />
+                <span className="hidden sm:inline">전체 화면</span>
+              </>
+            )}
           </button>
 
           {/* Theme button */}
@@ -832,16 +892,26 @@ export default function InstantChatMemo({
                           ? note.content.slice(0, 280) + '...'
                           : note.content;
 
+                      const fontSizeClass =
+                        bubbleFontSize === 'sm'
+                          ? 'text-[11.5px] leading-[1.6]'
+                          : bubbleFontSize === 'lg'
+                          ? 'text-[14.5px] leading-[1.75]'
+                          : 'text-[12.5px] leading-[1.65]';
+
                       return (
                         <div
-                          className={`relative ${currentWidthClass} p-2.5 sm:p-3 rounded-2xl rounded-tr-xs border shadow-xs leading-relaxed break-words text-xs ${bubbleBg} transition-all duration-150`}
+                          className={`relative ${currentWidthClass} min-h-[72px] sm:min-h-[78px] p-3 sm:p-3.5 rounded-2xl rounded-tr-xs border shadow-sm break-words ${bubbleBg} transition-all duration-150 flex flex-col justify-between`}
                         >
-                          <div className="whitespace-pre-wrap max-h-[420px] overflow-y-auto pr-1">
+                          {/* Inner memo text using crisp, highly readable Korean typography */}
+                          <div
+                            className={`font-memo-readable whitespace-pre-wrap max-h-[520px] overflow-y-auto pr-1 select-text tracking-normal ${fontSizeClass} text-gray-900 font-normal`}
+                          >
                             {renderHighlightedContent(displayContent, isCurrentMatchTarget)}
                           </div>
 
                           {/* Bubble bottom action bar */}
-                          <div className="mt-2 pt-1.5 border-t border-black/10 flex items-center justify-between gap-1 flex-wrap">
+                          <div className="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between gap-1 flex-wrap select-none">
                             {/* "전체 펼치기" 누르면 아예 전체 화면으로 크게 나오게 */}
                             <button
                               type="button"
@@ -849,7 +919,7 @@ export default function InstantChatMemo({
                                 retroAudio.playClick();
                                 setFullscreenNote(note);
                               }}
-                              className="px-2 py-0.5 bg-[#2b84cb] hover:bg-[#10558a] text-white rounded text-[10px] font-bold flex items-center gap-1 shadow-2xs transition-all active:scale-95"
+                              className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-[#2b84cb] hover:bg-[#10558a] text-white rounded text-[10px] sm:text-[11px] font-bold flex items-center gap-1 shadow-2xs transition-all active:scale-95"
                               title="이 메모를 전체 화면으로 시원하게 크게 펼쳐보기"
                             >
                               <Maximize2 className="w-2.5 h-2.5" />
@@ -857,6 +927,25 @@ export default function InstantChatMemo({
                             </button>
 
                             <div className="flex items-center gap-1">
+                              {/* 글자 크기 순환 버튼 (말풍선 바로 아래에서도 변경 가능) */}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const next =
+                                    bubbleFontSize === 'sm'
+                                      ? 'base'
+                                      : bubbleFontSize === 'base'
+                                      ? 'lg'
+                                      : 'sm';
+                                  changeBubbleFontSize(next);
+                                }}
+                                className="text-[10px] text-gray-700 hover:text-black font-medium flex items-center gap-0.5 px-1.5 py-0.5 rounded hover:bg-black/5"
+                                title="말풍선 글자 크기 변경 (소 11.5px → 중 12.5px → 대 14.5px)"
+                              >
+                                <span className="text-[#2b84cb] font-bold">글자:</span>
+                                <span>{bubbleFontSize === 'sm' ? '소' : bubbleFontSize === 'lg' ? '대' : '중'}</span>
+                              </button>
+
                               {/* 노란색 박스 너비 조절 버튼 (전체 노란 박스 동시 적용) */}
                               <button
                                 type="button"
@@ -944,7 +1033,7 @@ export default function InstantChatMemo({
             onKeyDown={handleKeyDown}
             rows={textareaRows}
             placeholder="아주 긴 글이나 소설, 논문, 코드, 일기도 마음껏 끄적여보세요... [Tab 키를 누르면 바로 저장됩니다!]"
-            className="flex-1 p-2 bg-[#f8fafc] border border-gray-300 focus:border-[#2b84cb] rounded-lg text-xs leading-relaxed resize-y focus:outline-none focus:bg-white transition-colors"
+            className="flex-1 p-2 bg-[#f8fafc] border border-gray-300 focus:border-[#2b84cb] rounded-lg text-[13px] font-memo-readable leading-relaxed resize-y focus:outline-none focus:bg-white transition-colors text-gray-900"
           />
 
           <button
@@ -1108,14 +1197,14 @@ export default function InstantChatMemo({
             {/* Modal Body: Large, Beautiful Yellow Post-It / Notepad Paper */}
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-[#fffbeb] selection:bg-amber-200">
               <div
-                className={`whitespace-pre-wrap break-words leading-relaxed text-gray-900 ${
+                className={`font-memo-readable whitespace-pre-wrap break-words leading-[1.8] text-gray-900 select-text ${
                   fullscreenFontSize === 'sm'
-                    ? 'text-xs sm:text-sm'
-                    : fullscreenFontSize === 'base'
                     ? 'text-sm sm:text-base'
-                    : fullscreenFontSize === 'lg'
+                    : fullscreenFontSize === 'base'
                     ? 'text-base sm:text-lg'
-                    : 'text-lg sm:text-xl'
+                    : fullscreenFontSize === 'lg'
+                    ? 'text-lg sm:text-xl'
+                    : 'text-xl sm:text-2xl'
                 }`}
               >
                 {renderHighlightedContent(fullscreenNote.content, false)}

@@ -52,6 +52,36 @@ export default function App() {
   const [dotoriCount, setDotoriCount] = useState<number>(77);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
   const [isQuickNotesOneWeekOnly, setIsQuickNotesOneWeekOnly] = useState<boolean>(true);
+  const [bgSkin, setBgSkin] = useState<string>(() => {
+    return localStorage.getItem('cyworld_wallpaper_skin') || 'grid';
+  });
+
+  const handleCycleBgSkin = () => {
+    const skins = ['grid', 'checker', 'dot', 'skyblue'];
+    const nextIdx = (skins.indexOf(bgSkin) + 1) % skins.length;
+    const nextSkin = skins[nextIdx];
+    setBgSkin(nextSkin);
+    localStorage.setItem('cyworld_wallpaper_skin', nextSkin);
+  };
+
+  const handleBgSkinChange = (skin: string) => {
+    setBgSkin(skin);
+    localStorage.setItem('cyworld_wallpaper_skin', skin);
+  };
+
+  const getBgSkinClass = (skin: string) => {
+    switch (skin) {
+      case 'checker':
+        return 'cyworld-bg-checker';
+      case 'dot':
+        return 'cyworld-bg-dot';
+      case 'skyblue':
+        return 'cyworld-bg-skyblue';
+      case 'grid':
+      default:
+        return 'cyworld-bg-grid';
+    }
+  };
 
   // Secret Lock state
   const [isSecretUnlocked, setIsSecretUnlocked] = useState(false);
@@ -241,7 +271,7 @@ export default function App() {
   // Loading Screen
   if (authLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center font-pixel p-4 text-[#333]">
+      <div className={`min-h-screen flex flex-col items-center justify-center font-pixel p-4 text-[#333] ${getBgSkinClass(bgSkin)}`}>
         <div className="bg-[#f0f4f8] border-3 border-[#2b84cb] p-6 rounded-xl shadow-2xl text-center max-w-sm">
           <div className="text-4xl animate-bounce mb-3">🌰</div>
           <h2 className="text-sm font-bold text-[#2b84cb] mb-1">
@@ -258,6 +288,7 @@ export default function App() {
     return (
       <AuthScreen
         noticeMessage={sessionNotice}
+        bgSkin={bgSkin}
         onLoginSuccess={() => {
           setSessionNotice(null);
           retroAudio.playChime();
@@ -284,7 +315,7 @@ export default function App() {
   const secretMemos = memos.filter((m) => m.isSecret || m.folder === 'secret');
 
   return (
-    <div className="h-screen h-[100dvh] w-full overflow-hidden p-0 sm:p-1.5 md:p-2 lg:p-3 flex flex-col items-center justify-start select-none font-pixel bg-[#89939e]">
+    <div className={`h-screen h-[100dvh] w-full overflow-hidden p-1 sm:p-2 md:p-3 flex flex-col items-center justify-start select-none font-pixel ${getBgSkinClass(bgSkin)}`}>
       {/* Outer Retro Minihompy Window Frame */}
       <div className="w-full max-w-6xl h-full max-h-full my-auto bg-[#c5ced8] border-0 md:border-4 border-[#e2e8f0] shadow-2xl rounded-none md:rounded-2xl p-0.5 sm:p-1 md:p-2 relative flex flex-col overflow-hidden">
         {/* Subtle 3D Bevel Rim */}
@@ -298,6 +329,8 @@ export default function App() {
             onChargeDotori={handleChargeDotori}
             minimeEmoji={MINIME_EMOJIS[defaultProf.minime || 'swim'] || '🏊‍♀️'}
             onOpenMobileProfile={() => setIsMobileProfileOpen(true)}
+            bgSkin={bgSkin}
+            onChangeBgSkin={handleCycleBgSkin}
           />
 
           {/* Mobile Horizontal Tabs (< md screen width) */}
@@ -439,6 +472,8 @@ export default function App() {
                     memos={memos}
                     quickNotes={quickNotes}
                     onUpdateProfile={handleUpdateProfile}
+                    bgSkin={bgSkin}
+                    onBgSkinChange={handleBgSkinChange}
                   />
                 )}
               </div>
