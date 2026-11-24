@@ -20,7 +20,7 @@ export default function HeaderBar({
   onLogout,
   dotoriCount,
   onChargeDotori,
-  minimeEmoji = '🏊‍♀️',
+  minimeEmoji = '🥱',
   onOpenMobileProfile,
   bgSkin = 'grid',
   onChangeBgSkin,
@@ -53,9 +53,9 @@ export default function HeaderBar({
         )}
 
         <span className="text-[#2b84cb] font-bold text-xs sm:text-sm tracking-wider flex items-center gap-0.5 truncate">
-          <span className="text-[#ff5252] shrink-0">▶▷</span>
+          <span className="shrink-0">▶▷</span>
           <span className="truncate max-w-[130px] sm:max-w-[240px] md:max-w-[420px]">{title}</span>
-          <span className="text-[#ff5252] shrink-0">◁◀</span>
+          <span className="shrink-0">◁◀</span>
         </span>
 
         <span className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-[#e0f2fe] text-[#0369a1] border border-[#7dd3fc] rounded text-[10px] font-bold shrink-0">

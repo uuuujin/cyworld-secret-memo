@@ -4,14 +4,21 @@ import {
   doc,
   getDoc,
   onSnapshot,
-  orderBy,
   query,
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { MemoItem, QuickNote, UserProfile } from '../types';
+import {
+  MemoItem,
+  PendingUploadFile,
+  QuickNote,
+  QuickNoteAttachment,
+  QuickNoteFile,
+  UserProfile,
+} from '../types';
 
 /**
  * Fetch or initialize the user's minihompy profile
@@ -54,26 +61,40 @@ export async function saveUserProfile(
   }
 }
 
+export function getLocalDateKey(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 /**
- * Increment visit counter (Today & Total)
+ * Increment visit counter (Today resets to 1 on a new local calendar date, Total increments persistently)
  */
-export async function incrementVisitCount(userId: string): Promise<void> {
-  const path = `users/${userId}`;
+export async function incrementVisitCount(
+  userId: string
+): Promise<{ todayCount: number; totalCount: number; lastVisitDate: string } | null> {
   try {
     const docRef = doc(db, 'users', userId);
     const snap = await getDoc(docRef);
     if (snap.exists()) {
       const data = snap.data() as UserProfile;
-      const todayCount = (data.todayCount || 0) + 1;
+      const todayKey = getLocalDateKey();
+      const isSameDay = data.lastVisitDate === todayKey;
+      const todayCount = isSameDay ? (data.todayCount || 0) + 1 : 1;
       const totalCount = (data.totalCount || 0) + 1;
       await updateDoc(docRef, {
         todayCount,
         totalCount,
+        lastVisitDate: todayKey,
         updatedAt: new Date().toISOString(),
       });
+      return { todayCount, totalCount, lastVisitDate: todayKey };
     }
+    return null;
   } catch (error) {
     console.warn('Could not increment visit count:', error);
+    return null;
   }
 }
 
@@ -250,38 +271,124 @@ export function subscribeQuickNotes(
 }
 
 /**
- * Create a quick note
+ * Create a quick note with optional bundled file attachments (.html, .txt, .png, .jpg)
  */
 export async function createQuickNote(
   userId: string,
   content: string,
-  mood: string = '감성'
+  mood: string = '감성',
+  files: PendingUploadFile[] = []
 ): Promise<void> {
   const noteId = `note_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
   const path = `users/${userId}/quickNotes/${noteId}`;
   try {
+    const now = new Date().toISOString();
+    const batch = writeBatch(db);
+    const attachments: QuickNoteAttachment[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const fileId = `qfile_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 6)}`;
+      const fileDocRef = doc(db, 'users', userId, 'quickNoteFiles', fileId);
+
+      const filePayload: QuickNoteFile = {
+        id: fileId,
+        userId,
+        noteId,
+        name: f.name,
+        ext: f.ext,
+        mimeType: f.mimeType,
+        kind: f.kind,
+        size: f.size,
+        createdAt: now,
+      };
+      if (typeof f.dataUrl === 'string') {
+        filePayload.dataUrl = f.dataUrl;
+      }
+      if (typeof f.textContent === 'string') {
+        filePayload.textContent = f.textContent;
+      }
+
+      batch.set(fileDocRef, filePayload);
+
+      const meta: QuickNoteAttachment = {
+        fileId,
+        name: f.name,
+        ext: f.ext,
+        mimeType: f.mimeType,
+        kind: f.kind,
+        size: f.size,
+      };
+      if (typeof f.thumbnailUrl === 'string') {
+        meta.thumbnailUrl = f.thumbnailUrl;
+      }
+      if (typeof f.textSnippet === 'string') {
+        meta.textSnippet = f.textSnippet;
+      }
+      attachments.push(meta);
+    }
+
     const newNote: QuickNote = {
       id: noteId,
       userId,
       content,
       mood,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
     };
-    const docRef = doc(db, 'users', userId, 'quickNotes', noteId);
-    await setDoc(docRef, newNote);
+    if (attachments.length > 0) {
+      newNote.attachments = attachments;
+    }
+
+    const noteDocRef = doc(db, 'users', userId, 'quickNotes', noteId);
+    batch.set(noteDocRef, newNote);
+
+    await batch.commit();
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
   }
 }
 
 /**
- * Delete a quick note
+ * Fetch an uploaded QuickNoteFile payload by fileId for full view / download
  */
-export async function deleteQuickNote(userId: string, noteId: string): Promise<void> {
+export async function getQuickNoteFile(
+  userId: string,
+  fileId: string
+): Promise<QuickNoteFile | null> {
+  const path = `users/${userId}/quickNoteFiles/${fileId}`;
+  try {
+    const fileDocRef = doc(db, 'users', userId, 'quickNoteFiles', fileId);
+    const snap = await getDoc(fileDocRef);
+    if (snap.exists()) {
+      return snap.data() as QuickNoteFile;
+    }
+    return null;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.GET, path);
+  }
+}
+
+/**
+ * Delete a quick note and any attached files
+ */
+export async function deleteQuickNote(
+  userId: string,
+  noteId: string,
+  attachmentFileIds: string[] = []
+): Promise<void> {
   const path = `users/${userId}/quickNotes/${noteId}`;
   try {
-    const docRef = doc(db, 'users', userId, 'quickNotes', noteId);
-    await deleteDoc(docRef);
+    if (attachmentFileIds.length > 0) {
+      const batch = writeBatch(db);
+      batch.delete(doc(db, 'users', userId, 'quickNotes', noteId));
+      for (const fileId of attachmentFileIds) {
+        batch.delete(doc(db, 'users', userId, 'quickNoteFiles', fileId));
+      }
+      await batch.commit();
+    } else {
+      const docRef = doc(db, 'users', userId, 'quickNotes', noteId);
+      await deleteDoc(docRef);
+    }
   } catch (error) {
     handleFirestoreError(error, OperationType.DELETE, path);
   }

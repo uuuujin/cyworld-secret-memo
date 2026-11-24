@@ -50,9 +50,9 @@ export default function AuthScreen({ onLoginSuccess, noticeMessage, bgSkin = 'gr
         {/* Retro Window Title Bar */}
         <div className="bg-[#2b84cb] text-white px-3 py-2 flex items-center justify-between text-xs font-bold shadow-xs">
           <div className="flex items-center gap-1.5">
-            <span className="text-[#ff5252]">▶▷</span>
+            <span>▶▷</span>
             <span>CYWORLD MINI-HOMPY MEMO (2000s)</span>
-            <span className="text-[#ff5252]">◁◀</span>
+            <span>◁◀</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="w-3 h-3 bg-[#e0f2fe] text-[#2b84cb] rounded-xs flex items-center justify-center text-[10px]">
@@ -72,7 +72,7 @@ export default function AuthScreen({ onLoginSuccess, noticeMessage, bgSkin = 'gr
           {/* Nostalgic Minihompy Lock Graphic */}
           <div className="relative mb-3">
             <div className="w-20 h-20 bg-white border-2 border-[#2b84cb] rounded-2xl flex items-center justify-center shadow-md">
-              <span className="text-4xl animate-bounce">🏊‍♀️</span>
+              <span className="text-4xl animate-bounce">🥱</span>
             </div>
             <div className="absolute -bottom-1 -right-1 bg-[#2b84cb] text-white p-1 rounded-full border-2 border-white shadow">
               <Lock className="w-3.5 h-3.5" />

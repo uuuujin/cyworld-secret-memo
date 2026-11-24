@@ -20,9 +20,9 @@ export default function SettingsView({
   bgSkin = 'grid',
   onBgSkinChange,
 }: Props) {
-  const [hompyTitle, setHompyTitle] = useState(profile.hompyTitle || '★~나만의 비밀 미니홈피~★');
-  const [displayName, setDisplayName] = useState(profile.displayName || '주인장');
-  const [passcode, setPasscode] = useState(profile.passcode || '1234');
+  const [hompyTitle, setHompyTitle] = useState(profile.hompyTitle || 'MEMO');
+  const [displayName, setDisplayName] = useState(profile.displayName || 'me');
+  const [passcode, setPasscode] = useState(profile.passcode || '9999');
   const [isLockEnabled, setIsLockEnabled] = useState(profile.isLockEnabled ?? true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
